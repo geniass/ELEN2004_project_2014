@@ -69,7 +69,15 @@ DataPoint::DataPoint(string dataString)
 
 void DataPoint::setYear(int y)
 {
-    validateGreaterThan(year, y, 0);
+    if(y > 0)
+    {
+        year = y;
+    }
+    else
+    {
+        valid = false;
+        cerr << "ERROR: Year must be greater than 0" << endl;
+    }
 }
 
 void DataPoint::setMonth(int m)
@@ -81,6 +89,7 @@ void DataPoint::setMonth(int m)
     else
     {
         valid = false;
+        cerr << "ERROR: Month must be between 1 and 12" << endl;
     }
 }
 
@@ -93,78 +102,86 @@ void DataPoint::setDay(int d)
     else
     {
         valid = false;
+        cerr << "ERROR: Day must be between 1 and 31" << endl;
     }
 }
 
 void DataPoint::setHour(int h)
 {
-    if(h > 0 & h <= 24)
+    if(h >= 0 & h <= 23)
     {
         hour = h;
     }
     else
     {
         valid = false;
+        cerr << "ERROR: Hour must be between 0 and 23" << endl;
     }
 }
 
 void DataPoint::setMinute(int m)
 {
-    if(m > 0 & m <= 60)
+    if(m >= 0 & m <= 59)
     {
         minute = m;
     }
     else
     {
         valid = false;
+        cerr << "ERROR: Minute must be between 0 and 59" << endl;
     }
 }
 
 void DataPoint::setSecond(double s)
 {
-    if(s > 0 && islessequal(s, 60.0))
+    if(s >= 0 && isless(s, 60.0))
     {
         second = s;
     }
     else
     {
         valid = false;
+        cerr << "ERROR: Second must be between 0 and less than 60" << endl;
     }
 }
 
 void DataPoint::setVoltage(double v)
 {
-    if(v > 0)
+    if(v >= 0)
     {
         voltage = v;
     }
     else
     {
         valid = false;
+        cerr << "ERROR: Voltage must be positive." << endl;
     }
 }
 
 void DataPoint::setCurrent(double c)
 {
-    if(c > 0)
+    if(c >= 0)
     {
         current = c;
     }
     else
     {
         valid = false;
+        cerr << "ERROR: Current must be positive." << endl;
     }
 }
 
 void DataPoint::setFrequency(double f)
 {
-    if(f > 0)
+    // freq=0 would be DC
+    if(f >= 0)
     {
         frequency = f;
     }
     else
     {
         valid = false;
+        cerr << "ERROR: Frequency must be positive." << endl;
     }
 }
 

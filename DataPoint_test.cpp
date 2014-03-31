@@ -34,3 +34,44 @@ TEST(DataPoint, StringCtor)
     EXPECT_DOUBLE_EQ(0.016, d.getCurrent());
     EXPECT_DOUBLE_EQ(50.062, d.getFrequency());
 }
+TEST(DataPoint, BoundryData)
+{
+    string data = "2014 12 31 23 59 59.99999 231.503 0.016 50.062";
+    DataPoint d(data);
+
+    EXPECT_TRUE(d.is_valid());
+    EXPECT_EQ(2014, d.getYear());
+    EXPECT_EQ(12, d.getMonth());
+    EXPECT_EQ(31, d.getDay());
+    EXPECT_EQ(23, d.getHour());
+    EXPECT_EQ(59, d.getMinute());
+    EXPECT_DOUBLE_EQ(59.99999, d.getSecond());
+    EXPECT_DOUBLE_EQ(231.503, d.getVoltage());
+    EXPECT_DOUBLE_EQ(0.016, d.getCurrent());
+    EXPECT_DOUBLE_EQ(50.062, d.getFrequency());
+}
+
+TEST(DataPoint, MoarBoundryData)
+{
+    string data = "2014 1 1 00 00 00.000001 231.503 0.016 0";
+    DataPoint d(data);
+
+    EXPECT_TRUE(d.is_valid());
+    EXPECT_EQ(2014, d.getYear());
+    EXPECT_EQ(1, d.getMonth());
+    EXPECT_EQ(1, d.getDay());
+    EXPECT_EQ(0, d.getHour());
+    EXPECT_EQ(0, d.getMinute());
+    EXPECT_DOUBLE_EQ(0.000001, d.getSecond());
+    EXPECT_DOUBLE_EQ(231.503, d.getVoltage());
+    EXPECT_DOUBLE_EQ(0.016, d.getCurrent());
+    EXPECT_DOUBLE_EQ(0, d.getFrequency());
+}
+
+TEST(DataPoint, InvalidData)
+{
+    string data = "-4 40 42 27 60 60.000001 -231.503 -0.016 -70 Hello";
+    DataPoint d(data);
+
+    EXPECT_FALSE(d.is_valid());
+}
