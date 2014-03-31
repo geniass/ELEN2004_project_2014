@@ -49,6 +49,7 @@ TEST(DataPoint, BoundryData)
     EXPECT_DOUBLE_EQ(231.503, d.getVoltage());
     EXPECT_DOUBLE_EQ(0.016, d.getCurrent());
     EXPECT_DOUBLE_EQ(50.062, d.getFrequency());
+    EXPECT_DOUBLE_EQ(3.704048, d.getPower());
 }
 
 TEST(DataPoint, MoarBoundryData)
@@ -66,6 +67,7 @@ TEST(DataPoint, MoarBoundryData)
     EXPECT_DOUBLE_EQ(231.503, d.getVoltage());
     EXPECT_DOUBLE_EQ(0.016, d.getCurrent());
     EXPECT_DOUBLE_EQ(0, d.getFrequency());
+    EXPECT_DOUBLE_EQ(3.704048, d.getPower());
 }
 
 TEST(DataPoint, InvalidData)
