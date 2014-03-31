@@ -60,10 +60,15 @@ DataPoint::DataPoint(string dataString)
         setVoltage(stod(columns.at(6)));
         setCurrent(stod(columns.at(7)));
         setFrequency(stod(columns.at(8)));
+        calculatePower();
     }
-    else
+    else if(column_count != 9)
     {
         cout << error_message << endl;
+    }
+    if(!valid)
+    {
+        cerr << "Invalid Data: " << dataString << endl << endl;
     }
 }
 
@@ -183,6 +188,19 @@ void DataPoint::setFrequency(double f)
         valid = false;
         cerr << "ERROR: Frequency must be positive." << endl;
     }
+}
+
+double DataPoint::calculatePower()
+{
+    if(valid)
+    {
+        power = voltage * current;
+    }
+    else
+    {
+        cerr << "ERROR: This DataPoint instance is invalid. Please initialise it with valid data" << endl;
+    }
+    return power;
 }
 
 // check that variable > val and set member = variable if true
