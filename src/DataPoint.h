@@ -12,6 +12,10 @@
 #define DATAPOINT_H
 
 #include <string>
+#include <cmath>
+#include <iostream>
+#include <sstream>
+#include <vector>
 
 class DataPoint
 {
@@ -20,11 +24,9 @@ public:
     DataPoint();
     // attempts to parse a space-delimited string of data of the form:
     // (YYYY MM DD HH MM Seconds Volts Current Frequency)
+    // NOTE: if the input string is invalid, is_valid() will return false and
+    // this class's behaviour will be undefined.
     DataPoint(std::string);
-
-    // calculates and sets power from voltage and current. These must be set
-    // before calling this method.
-    double calculatePower();
 
     // Takes 2 valid DataPoints and integrates their power with respect to time
     static double integrate(const DataPoint&, const DataPoint&);
@@ -43,28 +45,17 @@ public:
     // second occurs before the first. 0 if they are equal
     static int compareDateTime(const DataPoint, const DataPoint);
 
-    // setters that perform error-checking
-    void setYear(int);
-    void setMonth(int);
-    void setDay(int);
-    void setHour(int);
-    void setMinute(int);
-    void setSecond(double);
-    void setVoltage(double);
-    void setCurrent(double);
-    void setFrequency(double);
-
-    int getYear();
-    int getMonth();
-    int getDay();
-    int getHour();
-    int getMinute();
-    double getSecond();
-    double getVoltage();
-    double getCurrent();
-    double getFrequency();
-    double getPower();
-    bool is_valid();
+    int getYear() { return year; };
+    int getMonth() { return month; };
+    int getDay() { return day; };
+    int getHour() { return hour; };
+    int getMinute() { return minute; };
+    double getSecond() { return second; };
+    double getVoltage() { return voltage; };
+    double getCurrent() { return current; };
+    double getFrequency() { return frequency; };
+    double getPower() { return power; };
+    bool is_valid() { return valid; };
 
 private:
     int year;
@@ -78,6 +69,32 @@ private:
     double frequency;
     double power;
     bool valid;
+
+    static const double EPSILON;
+
+    // calculates and sets power from voltage and current. These must be set
+    // before calling this method.
+    double calculatePower();
+
+    // setters that perform error-checking
+    void setYear(int);
+    void setMonth(int);
+    void setDay(int);
+    void setHour(int);
+    void setMinute(int);
+    void setSecond(double);
+    void setVoltage(double);
+    void setCurrent(double);
+    void setFrequency(double);
+
+    // checks that int1 > int2. If true, sets int& = int1. Else sets 
+    // valid = false and int& = 0
+    bool validateGreaterThan(int&, int, int);
+    bool validateLessThan(int&, int, int);
+
+public:
+    // Returns 1 if double1 > double2 and vice-versa. 0 if they are equal
+    int compareDoubles(double, double);
 };
 
 #endif

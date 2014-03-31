@@ -15,7 +15,7 @@ using namespace std;
 TEST(DataPoint, DefaultCTor)
 {
     DataPoint d;
-    EXPECT_TRUE(d.is_valid());
+    EXPECT_FALSE(d.is_valid());
 }
 
 TEST(DataPoint, StringCtor)
@@ -23,7 +23,7 @@ TEST(DataPoint, StringCtor)
     string data = "2014 03 11 17 32 42.525674 231.503 0.016 50.062";
     DataPoint d(data);
 
-    EXPECT_FALSE(d.is_valid());
+    EXPECT_TRUE(d.is_valid());
     EXPECT_EQ(2014, d.getYear());
     EXPECT_EQ(3, d.getMonth());
     EXPECT_EQ(11, d.getDay());
