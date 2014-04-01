@@ -1,8 +1,12 @@
 #include <iostream>
 #include "DataPoint.h"
 #include <fstream>
+#include <map>
 
 using namespace std;
+
+void writeStatsFile(double, double, double);
+void writeHourFile(const map<int, double>&);
 
 int main()
 {
@@ -13,6 +17,16 @@ int main()
     double totalPower = 0.0;
     double maxPower = 0.0;
     double totalEnergy = 0.0;
+
+    double hourEnergy = 0.0; // total energy for current hour
+    int hourCounter = 0; // current hour
+    map<int, double> hourMap;
+
+    for(int i = 0; i < 24; i++)
+    {
+        // Initialise the map to have 24 pairs (0..23) initialised to 0.0
+        hourMap.insert(pair<int,double>(i, 0.0));
+    }
 
     DataPoint previousDataPoint;
 
@@ -33,7 +47,21 @@ int main()
 
                 if(lineCount > 0 && previousDataPoint.isValid())
                 {
-                    totalEnergy += DataPoint::integrate(previousDataPoint, currentDataPoint);
+                    double energy = DataPoint::integrate(previousDataPoint, currentDataPoint);
+                    totalEnergy += energy;
+
+                    int deltaHour = DataPoint::compareHours(currentDataPoint, previousDataPoint);
+                    if(deltaHour > 0)
+                    {
+                        cout << hourCounter << endl;
+                        hourMap.at(hourCounter) = hourEnergy;
+                        hourCounter++;
+                        hourEnergy = energy;
+                    }
+                    else if(deltaHour == 0)
+                    {
+                        hourEnergy += energy;
+                    }
                 }
 
                 // if we're on the first line, skip the integration (since it
@@ -48,7 +76,19 @@ int main()
             }
         }
 
+        if(hourCounter == 0)
+        {
+            // hourCounter wasn't incremented, implying that there's only
+            // 1 hour in the file. THerefore energy for this hour is just
+            // totalEnergy
+            hourMap.at(hourCounter) = totalEnergy;
+        }
+
         cout << "Lines: " << lineCount << endl << "Power: " << totalPower << endl << "Max: " << maxPower << endl << "energie: " << totalEnergy << endl;
+        cout << hourMap.at(1) << endl;
+
+        writeStatsFile(totalEnergy / (3.6e6), totalPower / lineCount, maxPower);
+        writeHourFile(hourMap);
     }
     else
     {
@@ -56,5 +96,40 @@ int main()
         return 1;
     }
 
+    dataFile.close();
+
     return 0;
+}
+
+void writeStatsFile(double kWh, double meanPower, double maxPower)
+{
+    ofstream statsFile("stats.txt");
+    if(statsFile.is_open())
+    {
+        statsFile << kWh << endl;
+        statsFile << meanPower << endl;
+        statsFile << maxPower << endl;
+    }
+    else
+    {
+        cerr << "ERROR: Could not open stats.txt" << endl;
+    }
+    statsFile.close();
+}
+
+void writeHourFile(const map<int,double>& hourMap)
+{
+    ofstream hourFile("byhour.txt");
+    if(hourFile.is_open())
+    {
+        for(map<int,double>::const_iterator i = hourMap.begin(); i != hourMap.end(); i++)
+        {
+            hourFile << i->first << " " << i->second << endl;
+        }
+    }
+    else
+    {
+        cerr << "ERROR: Could not open byhour.txt" << endl;
+    }
+    hourFile.close();
 }
