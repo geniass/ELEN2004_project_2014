@@ -72,6 +72,42 @@ DataPoint::DataPoint(string dataString)
     }
 }
 
+// Integrates between dp0 and dp1 using the trapezoidal integration rule.
+double DataPoint::integrate(const DataPoint& dp0, const DataPoint& dp1)
+{
+    if(dp0.isValid() && dp1.isValid())
+    {
+        // t0's and t1's difference in hours, minutes and seconds is
+        // calculated, then converted to seconds and finally added. This
+        // potentially avoids the unecessary multiplication of huge numbers.
+        double deltaT = compareHours(dp1, dp0) * 3600;
+        deltaT += compareMinutes(dp1, dp0) * 60;
+        deltaT += compareSeconds(dp1, dp0);
+
+        // And plug it into the trapezoidal rule:
+        // E = 0.5 * (t1 - t2) * (P(t1) + P(t2))
+        return 0.5 * deltaT * (dp0.getPower() + dp1.getPower());
+    }
+
+    //TODO: Throw an exception
+    return 0;
+}
+
+int DataPoint::compareHours(const DataPoint& dp0, const DataPoint& dp1)
+{
+    return dp0.getHour() - dp1.getHour();
+}
+
+int DataPoint::compareMinutes(const DataPoint& dp0, const DataPoint& dp1)
+{
+    return dp0.getMinute() - dp1.getMinute();
+}
+
+double DataPoint::compareSeconds(const DataPoint& dp0, const DataPoint& dp1)
+{
+    return dp0.getSecond() - dp1.getSecond();
+}
+
 void DataPoint::setYear(int y)
 {
     if(y > 0)
@@ -201,54 +237,4 @@ double DataPoint::calculatePower()
         cerr << "ERROR: This DataPoint instance is invalid. Please initialise it with valid data" << endl;
     }
     return power;
-}
-
-// check that variable > val and set member = variable if true
-bool DataPoint::validateGreaterThan(int& member, int variable, int val)
-{
-    if(variable > val)
-    {
-        member = variable;
-    }
-    else
-    {
-        member = 0;
-        valid = false;
-    }
-
-    return valid;
-}
-
-// check that variable > val and set member = variable if true
-bool DataPoint::validateLessThan(int& member, int variable, int val)
-{
-    if(variable < val)
-    {
-        member = variable;
-    }
-    else
-    {
-        member = 0;
-        valid = false;
-    }
-
-    return valid;
-}
-
-int DataPoint::compareDoubles(double d1, double d2)
-{
-    double diff = d2 - d1;
-    if (d1 == d2 || abs(diff) < EPSILON)
-    {
-        // Doubles are equal, or close enough
-        return 0;
-    }
-
-    if(diff < 0)
-    {
-        return 1;
-    }
-
-    // less than
-    return -1;
 }

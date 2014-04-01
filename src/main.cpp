@@ -21,12 +21,12 @@ int main()
         while (getline(dataFile, line))
         {
             DataPoint currentDataPoint(line);
-            if(currentDataPoint.is_valid())
+            if(currentDataPoint.isValid())
             {
                 lineCount++;
                 totalPower += currentDataPoint.getPower();
 
-                if(lineCount > 0 && previousDataPoint.is_valid())
+                if(lineCount > 0 && previousDataPoint.isValid())
                 {
                     cout << "previous: " << previousDataPoint.getPower() << endl;
                     cout << "Current: " << currentDataPoint.getPower() << endl;

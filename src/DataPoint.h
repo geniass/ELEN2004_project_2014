@@ -20,11 +20,11 @@
 class DataPoint
 {
 public:
-    // creates an empty DataPoint. is_valid() will return true
+    // creates an empty DataPoint. isValid() will return false
     DataPoint();
     // attempts to parse a space-delimited string of data of the form:
     // (YYYY MM DD HH MM Seconds Volts Current Frequency)
-    // NOTE: if the input string is invalid, is_valid() will return false and
+    // NOTE: if the input string is invalid, isValid() will return false and
     // this class's behaviour will be undefined.
     DataPoint(std::string);
 
@@ -34,28 +34,28 @@ public:
     // The time difference of the supplied Datapoint objects. Positive if the
     // first time is greater than the second, and vice-versa. 0 if they are
     // equal
-    static int compareYears(const DataPoint, const DataPoint);
-    static int compareMonths(const DataPoint, const DataPoint);
-    static int compareDays(const DataPoint, const DataPoint);
-    static int compareHours(const DataPoint, const DataPoint);
-    static int compareMinutes(const DataPoint, const DataPoint);
-    static double compareSeconds(const DataPoint, const DataPoint);
+    static int compareYears(const DataPoint&, const DataPoint&);
+    static int compareMonths(const DataPoint&, const DataPoint&);
+    static int compareDays(const DataPoint&, const DataPoint&);
+    static int compareHours(const DataPoint&, const DataPoint&);
+    static int compareMinutes(const DataPoint&, const DataPoint&);
+    static double compareSeconds(const DataPoint&, const DataPoint&);
 
     // Returns 1 if the first Datapoint occurs before the second, -1 if the
     // second occurs before the first. 0 if they are equal
     static int compareDateTime(const DataPoint, const DataPoint);
 
-    int getYear() { return year; };
-    int getMonth() { return month; };
-    int getDay() { return day; };
-    int getHour() { return hour; };
-    int getMinute() { return minute; };
-    double getSecond() { return second; };
-    double getVoltage() { return voltage; };
-    double getCurrent() { return current; };
-    double getFrequency() { return frequency; };
-    double getPower() { return power; };
-    bool is_valid() { return valid; };
+    int getYear() const { return year; };
+    int getMonth() const { return month; };
+    int getDay() const { return day; };
+    int getHour() const { return hour; };
+    int getMinute() const { return minute; };
+    double getSecond() const { return second; };
+    double getVoltage() const { return voltage; };
+    double getCurrent() const { return current; };
+    double getFrequency() const { return frequency; };
+    double getPower() const { return power; };
+    bool isValid() const { return valid; };
 
 private:
     int year;
@@ -86,15 +86,6 @@ private:
     void setVoltage(double);
     void setCurrent(double);
     void setFrequency(double);
-
-    // checks that int1 > int2. If true, sets int& = int1. Else sets 
-    // valid = false and int& = 0
-    bool validateGreaterThan(int&, int, int);
-    bool validateLessThan(int&, int, int);
-
-public:
-    // Returns 1 if double1 > double2 and vice-versa. 0 if they are equal
-    int compareDoubles(double, double);
 };
 
 #endif
