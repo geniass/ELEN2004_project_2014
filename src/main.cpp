@@ -1,10 +1,22 @@
+// 718005
+/*
+ * Ari Croock 718005
+ * 30/03/2014
+ *
+ * main.cpp
+ * The main method of the project along with other supporting methods.
+ * Contains the logic for reading in the data files, processing lines using
+ * DataPoint objects and writing the output to files.
+ */
+
 #include <iostream>
-#include "DataPoint.h"
 #include <fstream>
 #include <map>
+#include "DataPoint.h"
 
 using namespace std;
 
+void initialiseHourMap(map<int, double>&);
 void writeStatsFile(double, double, double);
 void writeHourFile(const map<int, double>&);
 
@@ -21,12 +33,7 @@ int main()
     double hourEnergy = 0.0; // total energy for current hour
     int hourCounter = 0; // current hour
     map<int, double> hourMap;
-
-    for(int i = 0; i < 24; i++)
-    {
-        // Initialise the map to have 24 pairs (0..23) initialised to 0.0
-        hourMap.insert(pair<int,double>(i, 0.0));
-    }
+    initialiseHourMap(hourMap);
 
     DataPoint previousDataPoint;
 
@@ -53,7 +60,6 @@ int main()
                     int deltaHour = DataPoint::compareHours(currentDataPoint, previousDataPoint);
                     if(deltaHour > 0)
                     {
-                        cout << hourCounter << endl;
                         hourMap.at(hourCounter) = hourEnergy;
                         hourCounter++;
                         hourEnergy = energy;
@@ -70,7 +76,7 @@ int main()
             }
             else
             {
-                // ignore current datapoint
+                // ignore current invalid datapoint
                 // The datapoint constructor has already printed errors
                 continue;
             }
@@ -87,7 +93,9 @@ int main()
         cout << "Lines: " << lineCount << endl << "Power: " << totalPower << endl << "Max: " << maxPower << endl << "energie: " << totalEnergy << endl;
         cout << hourMap.at(1) << endl;
 
-        writeStatsFile(totalEnergy / (3.6e6), totalPower / lineCount, maxPower);
+        writeStatsFile(totalEnergy / (3.6e6),            // 1 kWh = 3.6MJ
+                       totalPower / lineCount,           // compute the average
+                       maxPower);
         writeHourFile(hourMap);
     }
     else
@@ -99,6 +107,15 @@ int main()
     dataFile.close();
 
     return 0;
+}
+
+void initialiseHourMap(map<int, double>& hourMap)
+{
+    for(int i = 0; i < 24; i++)
+    {
+        // Initialise the map to have 24 pairs (0..23) initialised to 0.0
+        hourMap.insert(pair<int,double>(i, 0.0));
+    }
 }
 
 void writeStatsFile(double kWh, double meanPower, double maxPower)
