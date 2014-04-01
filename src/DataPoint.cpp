@@ -80,6 +80,9 @@ double DataPoint::integrate(const DataPoint& dp0, const DataPoint& dp1)
         // t0's and t1's difference in hours, minutes and seconds is
         // calculated, then converted to seconds and finally added. This
         // potentially avoids the unecessary multiplication of huge numbers.
+        // Only hours,minutes and seconds are considered because we assume that
+        // there is never more than 24 hours in one data file. This could be
+        // extended to consider years etc as well to be further decoupled from main
         double deltaT = compareHours(dp1, dp0) * 3600;
         deltaT += compareMinutes(dp1, dp0) * 60;
         deltaT += compareSeconds(dp1, dp0);

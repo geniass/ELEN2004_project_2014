@@ -26,11 +26,14 @@ int main()
                 lineCount++;
                 totalPower += currentDataPoint.getPower();
 
+                if(currentDataPoint.getPower() > maxPower)
+                {
+                    maxPower = currentDataPoint.getPower();
+                }
+
                 if(lineCount > 0 && previousDataPoint.isValid())
                 {
-                    cout << "previous: " << previousDataPoint.getPower() << endl;
-                    cout << "Current: " << currentDataPoint.getPower() << endl;
-                    //TODO: Integrate and whatnot
+                    totalEnergy += DataPoint::integrate(previousDataPoint, currentDataPoint);
                 }
 
                 // if we're on the first line, skip the integration (since it
@@ -44,6 +47,8 @@ int main()
                 continue;
             }
         }
+
+        cout << "Lines: " << lineCount << endl << "Power: " << totalPower << endl << "Max: " << maxPower << endl << "energie: " << totalEnergy << endl;
     }
     else
     {
