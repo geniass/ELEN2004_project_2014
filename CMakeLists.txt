@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 SET(CMAKE_CXX_FLAGS "-std=c++11")
 project(elen2004)
 enable_testing()
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
 add_subdirectory(gtest-1.7.0)
 include_directories(${gtest_SOURCE_DIR}/include)
