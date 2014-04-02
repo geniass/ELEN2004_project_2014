@@ -17,6 +17,8 @@
 
 using namespace std;
 
+const double MAX_TIME_GAP_SECONDS = 5; // max gap between 2 datapoints
+
 void writeStatsFile(double, double, double);
 
 int main()
@@ -50,13 +52,17 @@ int main()
 
                 if(lineCount > 0 && previousDataPoint.isValid())
                 {
-                    //TODO: Maybe add up map values instead of using
-                    //totalEnergy. Could avoid problems with gaps in data
-                    double energy = DataPoint::integrate(previousDataPoint, currentDataPoint);
-                    totalEnergy += energy;
+                    double energy = 0;
+
+                    // If the gap between the previous and current datapoints
+                    // is too large, don't integrate between them.
+                    if(DataPoint::timeDifference(currentDataPoint, previousDataPoint) < MAX_TIME_GAP_SECONDS)
+                    {
+                        energy = DataPoint::integrate(previousDataPoint, currentDataPoint);
+                        totalEnergy += energy;
+                    }
 
                     int deltaHour = DataPoint::compareHours(currentDataPoint, previousDataPoint);
-
                     hourStruct.update(deltaHour, energy);
                 }
 

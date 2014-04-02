@@ -41,6 +41,12 @@ void HourStruct::finalUpdate(double totalEnergy)
         // totalEnergy
         hourMap.at(hourCounter) = JtokWh(totalEnergy);
     }
+    else if(hourEnergy != 0) // maybe at(hourCounter) == 0
+    {
+        // If we're on the last datapoint but in the same hour, the last hour
+        // in the map won't have its value set. Do it here
+        hourMap.at(hourCounter) = JtokWh(hourEnergy);
+    }
 }
 
 void HourStruct::writeHourFile()
