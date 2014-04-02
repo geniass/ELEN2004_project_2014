@@ -17,6 +17,7 @@
 using namespace std;
 
 void initialiseHourMap(map<int, double>&);
+double JtokWh(double);
 void writeStatsFile(double, double, double);
 void writeHourFile(const map<int, double>&);
 
@@ -54,14 +55,19 @@ int main()
 
                 if(lineCount > 0 && previousDataPoint.isValid())
                 {
+                    //TODO: Maybe add up map values instead of using
+                    //totalEnergy. Could avoid problems with gaps in data
                     double energy = DataPoint::integrate(previousDataPoint, currentDataPoint);
                     totalEnergy += energy;
 
                     int deltaHour = DataPoint::compareHours(currentDataPoint, previousDataPoint);
                     if(deltaHour > 0)
                     {
-                        hourMap.at(hourCounter) = hourEnergy;
-                        hourCounter++;
+                        hourMap.at(hourCounter) = JtokWh(hourEnergy);
+                        // If there is a gap in the measurements, this prevents
+                        // the gap from being ignored, ie, there will also be
+                        // an appropriate gap in the byhour.txt file
+                        hourCounter += deltaHour;
                         hourEnergy = energy;
                     }
                     else if(deltaHour == 0)
@@ -87,13 +93,12 @@ int main()
             // hourCounter wasn't incremented, implying that there's only
             // 1 hour in the file. THerefore energy for this hour is just
             // totalEnergy
-            hourMap.at(hourCounter) = totalEnergy;
+            hourMap.at(hourCounter) = JtokWh(totalEnergy);
         }
 
         cout << "Lines: " << lineCount << endl << "Power: " << totalPower << endl << "Max: " << maxPower << endl << "energie: " << totalEnergy << endl;
-        cout << hourMap.at(1) << endl;
 
-        writeStatsFile(totalEnergy / (3.6e6),            // 1 kWh = 3.6MJ
+        writeStatsFile(JtokWh(totalEnergy),            // 1 kWh = 3.6MJ
                        totalPower / lineCount,           // compute the average
                        maxPower);
         writeHourFile(hourMap);
@@ -116,6 +121,11 @@ void initialiseHourMap(map<int, double>& hourMap)
         // Initialise the map to have 24 pairs (0..23) initialised to 0.0
         hourMap.insert(pair<int,double>(i, 0.0));
     }
+}
+
+double JtokWh(double joules)
+{
+    return joules / (3.6e6);
 }
 
 void writeStatsFile(double kWh, double meanPower, double maxPower)
