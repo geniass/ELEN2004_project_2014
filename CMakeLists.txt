@@ -6,6 +6,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
 add_subdirectory(gtest-1.7.0)
 include_directories(${gtest_SOURCE_DIR}/include)
+
+SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra")
 add_subdirectory(src)
 include_directories(src)
 

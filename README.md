@@ -13,7 +13,7 @@ to build correctly on all platforms
 unit tests by:
 
 cd src; (cd into src code directory)
-g++ --std=c++11 main.cpp DataPoint.cpp -o elen_2004_2014
+g++ --std=c++11 main.cpp DataPoint.cpp HourStruct.cpp Utils.cpp -o elen_2004_2014
 
 
 *) So if you do want to run the unit tests as well, just run:
