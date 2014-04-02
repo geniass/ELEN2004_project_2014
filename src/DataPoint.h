@@ -44,9 +44,9 @@ public:
     static int compareMinutes(const DataPoint&, const DataPoint&);
     static double compareSeconds(const DataPoint&, const DataPoint&);
 
-    // Returns 1 if the first Datapoint occurs before the second, -1 if the
-    // second occurs before the first. 0 if they are equal
-    static int compareDateTime(const DataPoint, const DataPoint);
+    // Returns the difference between dp0 and dp1 in seconds. Their times should
+    // never cross a month boundry.
+    static double timeDifference(const DataPoint&, const DataPoint&);
 
     int getYear() const { return year; };
     int getMonth() const { return month; };

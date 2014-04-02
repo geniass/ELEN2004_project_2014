@@ -80,15 +80,7 @@ double DataPoint::integrate(const DataPoint& dp0, const DataPoint& dp1)
 {
     if(dp0.isValid() && dp1.isValid())
     {
-        // t0's and t1's difference in days, hours, minutes and seconds is
-        // calculated, then converted to seconds and finally added. This
-        // potentially avoids the unecessary multiplication of huge numbers.
-        // The data should never cross over a month boundry, as this would
-        // require a much more complex system to be handled properly.
-        double deltaT = compareDays(dp1, dp0) * SECONDS_IN_DAY;
-        deltaT += compareHours(dp1, dp0) * SECONDS_IN_HOUR;
-        deltaT += compareMinutes(dp1, dp0) * SECONDS_IN_MINUTE;
-        deltaT += compareSeconds(dp1, dp0);
+        double deltaT = timeDifference(dp1, dp0);
 
         // And plug it into the trapezoidal rule:
         // E = 0.5 * (t1 - t2) * (P(t1) + P(t2))
@@ -98,14 +90,32 @@ double DataPoint::integrate(const DataPoint& dp0, const DataPoint& dp1)
     //TODO: Throw an exception
     return 0;
 }
+
+// Returns the difference between dp0 and dp1 in seconds. Their times should
+// never cross a month boundry.
+double DataPoint::timeDifference(const DataPoint& dp0, const DataPoint& dp1)
+{
+    // t0's and t1's difference in days, hours, minutes and seconds is
+    // calculated, then converted to seconds and finally added. This
+    // potentially avoids the unecessary multiplication of huge numbers.
+    // The data should never cross over a month boundry, as this would
+    // require a much more complex system to be handled properly.
+    return compareDays(dp0, dp1) * SECONDS_IN_DAY +
+        compareHours(dp0, dp1) * SECONDS_IN_HOUR +
+        compareMinutes(dp0, dp1) * SECONDS_IN_MINUTE +
+        compareSeconds(dp0, dp1);
+}
+
 int DataPoint::compareYears(const DataPoint& dp0, const DataPoint& dp1)
 {
     return dp0.getYear() - dp1.getYear();
 }
+
 int DataPoint::compareMonths(const DataPoint& dp0, const DataPoint& dp1)
 {
     return dp0.getMonth() - dp1.getMonth();
 }
+
 int DataPoint::compareDays(const DataPoint& dp0, const DataPoint& dp1)
 {
     return dp0.getDay() - dp1.getDay();
@@ -141,7 +151,7 @@ void DataPoint::setYear(int y)
 
 void DataPoint::setMonth(int m)
 {
-    if(m > 0 & m <= 12)
+    if(m > 0 && m <= 12)
     {
         month = m;
     }
@@ -154,7 +164,7 @@ void DataPoint::setMonth(int m)
 
 void DataPoint::setDay(int d)
 {
-    if(d > 0 & d <= 31)
+    if(d > 0 && d <= 31)
     {
         day = d;
     }
@@ -167,7 +177,7 @@ void DataPoint::setDay(int d)
 
 void DataPoint::setHour(int h)
 {
-    if(h >= 0 & h <= 23)
+    if(h >= 0 && h <= 23)
     {
         hour = h;
     }
@@ -180,7 +190,7 @@ void DataPoint::setHour(int h)
 
 void DataPoint::setMinute(int m)
 {
-    if(m >= 0 & m <= 59)
+    if(m >= 0 && m <= 59)
     {
         minute = m;
     }
