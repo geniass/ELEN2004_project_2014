@@ -30,6 +30,8 @@ public:
     DataPoint(std::string);
 
     // Takes 2 valid DataPoints and integrates their power with respect to time
+    // NOTE: The 2 dates of the datapoints MUST NEVER cross over a month/year
+    // boundry as this will result in unexpected results.
     static double integrate(const DataPoint&, const DataPoint&);
 
     // The time difference of the supplied Datapoint objects. Positive if the
@@ -71,7 +73,9 @@ private:
     double power;
     bool valid;
 
-    static const double EPSILON;
+    static const int SECONDS_IN_MINUTE;
+    static const int SECONDS_IN_HOUR;
+    static const int SECONDS_IN_DAY;
 
     // calculates and sets power from voltage and current. These must be set
     // before calling this method.

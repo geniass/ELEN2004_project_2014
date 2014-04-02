@@ -13,7 +13,9 @@
 
 using namespace std;
 
-const double DataPoint::EPSILON = 0.0000001;
+const int DataPoint::SECONDS_IN_MINUTE = 60;
+const int DataPoint::SECONDS_IN_HOUR = 60 * SECONDS_IN_MINUTE;
+const int DataPoint::SECONDS_IN_DAY = 24 * SECONDS_IN_HOUR;
 
 DataPoint::DataPoint()
 {
@@ -78,14 +80,14 @@ double DataPoint::integrate(const DataPoint& dp0, const DataPoint& dp1)
 {
     if(dp0.isValid() && dp1.isValid())
     {
-        // t0's and t1's difference in hours, minutes and seconds is
+        // t0's and t1's difference in days, hours, minutes and seconds is
         // calculated, then converted to seconds and finally added. This
         // potentially avoids the unecessary multiplication of huge numbers.
-        // Only hours,minutes and seconds are considered because we assume that
-        // there is never more than 24 hours in one data file. This could be
-        // extended to consider years etc as well to be further decoupled from main
-        double deltaT = compareHours(dp1, dp0) * 3600;
-        deltaT += compareMinutes(dp1, dp0) * 60;
+        // The data should never cross over a month boundry, as this would
+        // require a much more complex system to be handled properly.
+        double deltaT = compareDays(dp1, dp0) * SECONDS_IN_DAY;
+        deltaT += compareHours(dp1, dp0) * SECONDS_IN_HOUR;
+        deltaT += compareMinutes(dp1, dp0) * SECONDS_IN_MINUTE;
         deltaT += compareSeconds(dp1, dp0);
 
         // And plug it into the trapezoidal rule:
@@ -95,6 +97,18 @@ double DataPoint::integrate(const DataPoint& dp0, const DataPoint& dp1)
 
     //TODO: Throw an exception
     return 0;
+}
+int DataPoint::compareYears(const DataPoint& dp0, const DataPoint& dp1)
+{
+    return dp0.getYear() - dp1.getYear();
+}
+int DataPoint::compareMonths(const DataPoint& dp0, const DataPoint& dp1)
+{
+    return dp0.getMonth() - dp1.getMonth();
+}
+int DataPoint::compareDays(const DataPoint& dp0, const DataPoint& dp1)
+{
+    return dp0.getDay() - dp1.getDay();
 }
 
 int DataPoint::compareHours(const DataPoint& dp0, const DataPoint& dp1)
@@ -186,7 +200,7 @@ void DataPoint::setSecond(double s)
     else
     {
         valid = false;
-        cerr << "ERROR: Second must be between 0 and less than 60" << endl;
+        cerr << "ERROR: Second must be between 0 and 60" << endl;
     }
 }
 

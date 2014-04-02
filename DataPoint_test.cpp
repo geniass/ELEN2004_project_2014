@@ -102,3 +102,10 @@ TEST(DataPoint, Integrate2)
 
     EXPECT_EQ(-378000, DataPoint::integrate(d0, d1));
 }
+TEST(DataPoint, IntegrateDay)
+{
+    DataPoint d0("2014 10 30 23 59 59.0 100 1 50.062");
+    DataPoint d1("2014 10 31 00 00 00.0 110 1 50.062");
+
+    EXPECT_EQ(105, DataPoint::integrate(d0, d1));
+}

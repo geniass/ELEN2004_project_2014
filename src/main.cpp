@@ -96,7 +96,7 @@ int main()
             hourMap.at(hourCounter) = JtokWh(totalEnergy);
         }
 
-        cout << "Lines: " << lineCount << endl << "Power: " << totalPower << endl << "Max: " << maxPower << endl << "energie: " << totalEnergy << endl;
+        cout << "Lines: " << lineCount << endl << "Power (W): " << totalPower << endl << "Max power(W): " << maxPower << endl << "energy (J): " << totalEnergy << endl;
 
         writeStatsFile(JtokWh(totalEnergy),            // 1 kWh = 3.6MJ
                        totalPower / lineCount,           // compute the average
@@ -125,6 +125,7 @@ void initialiseHourMap(map<int, double>& hourMap)
 
 double JtokWh(double joules)
 {
+    // 1 kWh = 3.6MJ
     return joules / (3.6e6);
 }
 
